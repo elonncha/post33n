@@ -4,17 +4,6 @@ library(sf)
 
 
 #' -----------------------------------------------------------------------------
-#' set up boundary (ATL Metro, ARC Counties) 
-#' SOURCE: ARC GIS Open Data Hub, https://opendata.atlantaregional.com/search?q=county%20boundary
-county.atlregion = read_csv('data/raw/Counties_Atlanta_Region.csv')
-COUNTYFP.ATLM = county.atlregion$GEOID10
-COUNTYFP.ARC = county.atlregion$GEOID10[county.atlregion$Reg_Comm == 'Atlanta Regional Commission']
-#' -----------------------------------------------------------------------------
-
-
-
-
-#' -----------------------------------------------------------------------------
 #' process raw heat data 
 
 #' 0. @historic.heat
@@ -27,7 +16,7 @@ historic.heat = read_csv('data/raw/historic-heat_ga_county.csv') %>%
                 relocate(heat_days, .after = year)
 
 write_csv(historic.heat, file = 'data/cleaned/historic-heat-ga.csv')
-COUNTYFP.GA = unique(historic.heat$COUNTYFP)
+
 
 #' 1. @project.heat: 
 # VARIABLE(s): Projected Difference in Extreme Heat Days as Compared to the Historical Period

@@ -1,9 +1,6 @@
 library(ggplot2)
 library(tidyverse)
 library(hrbrthemes)
-library(lubridate)
-source('R/loading.R')
-
 library(janitor)
 library(showtext)
 library(MetBrewer)
@@ -14,16 +11,29 @@ library(gghighlight)
 
 #' -----------------------------------------------------------------------------
 #' @data
-historic.heat.ARC = historic.heat %>% 
-  filter(COUNTYFP %in% COUNTYFP.ARC, year<=2019)
-
-historic.heat.ARCavg = historic.heat %>% 
-  filter(COUNTYFP %in% COUNTYFP.ARC) %>%
-  group_by(year) %>% 
-  summarise(avg_heat_days = mean(heat_days))
+suppressMessages({
+  county.atlregion = read_csv('data/raw/Counties_Atlanta_Region.csv')
+  COUNTYFP.ARC = county.atlregion$GEOID10[county.atlregion$Reg_Comm == 'Atlanta Regional Commission']
+  
+  rm(county.atlregion)
+  
+  historic.heat = read_csv('data/cleaned/historic-heat-ga.csv')
+  
+  historic.heat.ARC = historic.heat %>% 
+    filter(COUNTYFP %in% COUNTYFP.ARC, year<=2019)
+  
+  historic.heat.ARCavg = historic.heat %>% 
+    filter(COUNTYFP %in% COUNTYFP.ARC) %>%
+    group_by(year) %>% 
+    summarise(avg_heat_days = mean(heat_days))
+})
 #' -----------------------------------------------------------------------------
 
-#### MISC ####
+
+
+
+#' -----------------------------------------------------------------------------
+#' @format
 font = "Gudea"
 font_add_google(family=font, font, db_cache = TRUE)
 fa_path = systemfonts::font_info(family = "Font Awesome 6 Brands")[["path"]]
@@ -32,7 +42,7 @@ theme_set(theme_minimal(base_family = font, base_size = 10))
 bg = "#F4F5F1"
 txt_col = "black"
 showtext_auto(enable = TRUE)
-
+#' -----------------------------------------------------------------------------
 
 
 p = ggplot() + 
@@ -74,5 +84,5 @@ p = p +
   )
 
 
-ggsave('line2.jpeg', plot = p, width = 16, height = 9)
+ggsave('output/line2.jpeg', plot = p, width = 16, height = 9)
 

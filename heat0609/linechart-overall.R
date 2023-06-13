@@ -1,12 +1,23 @@
 library(ggplot2)
 library(tidyverse)
-library(plotly)
 library(hrbrthemes)
-library(lubridate)
-source('R/loading.R')
 
 #' -----------------------------------------------------------------------------
 #' @data
+suppressMessages({
+  county.atlregion = read_csv('data/raw/Counties_Atlanta_Region.csv')
+  historic.heat = read_csv('data/raw/historic-heat_ga_county.csv')
+  
+  COUNTYFP.ATLM = county.atlregion$GEOID10
+  COUNTYFP.ARC = county.atlregion$GEOID10[county.atlregion$Reg_Comm == 'Atlanta Regional Commission']
+  COUNTYFP.GA = unique(historic.heat$CountyFIPS)
+  
+  rm(county.atlregion)
+  rm(historic.heat)
+  
+  historic.heat = read_csv('data/cleaned/historic-heat-ga.csv')
+})
+
 historic.heat.GAavg = historic.heat %>% 
   group_by(year) %>% 
   summarise(avg_heat_days = mean(heat_days))
@@ -79,35 +90,35 @@ p = p +
       geom_text(
         data = data.frame(x = 2022, y = seq(10, 100, by = 10)), aes(x, y, label = y),
         hjust = 1, vjust = 0, nudge_y = 32 * 0.01,
-        size = 15, alpha = 0.4
+        size = 6, alpha = 0.4
       ) + 
       # title
       geom_text(
         data = data.frame(x = 1979, y = 105, t = "County-Level Average Number of Extreme Heat Days (Annual, 1979-2021)"),
         aes(x, y, label = t), fontface = "bold",
-        hjust = 0, vjust = 1, size = 25
+        hjust = 0, vjust = 1, size = 7
       ) + 
       # legend text
       geom_text(
         data = data.frame(x = 1982.3, y = 89, t = "Georgia"),
         aes(x, y, label = t),
-        hjust = 0, vjust = 0, size = 15
+        hjust = 0, vjust = 0, size = 8
       ) + 
       geom_text(
         data = data.frame(x = 1982.3, y = 84, t = "ARC 11-County Region"),
         aes(x, y, label = t),
-        hjust = 0, vjust = 0, size = 15
+        hjust = 0, vjust = 0, size = 8
       ) +
       # stress point annotation 
       geom_text(
         data = data.frame(x = 2021.5, y = 67, t = "67"),
         aes(x, y, label = t), fontface = "bold",
-        hjust = 1.5, vjust = -0.8, size = 30
+        hjust = 1.5, vjust = -0.8, size = 15
       ) + 
       geom_text(
         data = data.frame(x = 2021.5, y = 47.5, t = "48"),
         aes(x, y, label = t), fontface = "bold",
-        hjust = 1.5, vjust = -0.8, size = 30
+        hjust = 1.5, vjust = -0.8, size = 15
       ) 
 
 p = p + 
@@ -123,7 +134,7 @@ p = p +
       axis.line.x.bottom = element_line(color = "black"),
       # But customize labels for the horizontal axis
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 45),
+      axis.text.x = element_text(size = 15),
       plot.margin=unit(c(1,2,1,0), "cm"),
       panel.margin=unit(c(1,2,1,0), "cm")
     ) + 
@@ -140,4 +151,4 @@ p = p +
       expand = c(0, 0)
     ) 
 
-ggsave('line1.jpeg', plot = p, width = 16, height = 9)
+ggsave('output/line1.jpeg', plot = p, width = 16, height = 9)

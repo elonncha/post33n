@@ -27,7 +27,7 @@ reds = colorBin("Reds", domain = project.heat$extra_heat_days, bins = c(0,1,2,3,
 #' @choropleth
 ui = bootstrapPage(tags$style(type = "text/css", "html, body, .leaflet {width:100%; height:100%}"),
                    leafletOutput("map", width = "100%", height = "100%"),
-                   absolutePanel(bottom = 10, right = 0, draggable = F,
+                   absolutePanel(top = 10, right = 0, draggable = F,
                                  # slider title, step increments, and ticks
                                  selectInput("period", "Projection Period",
                                              c(2045, 2065, 2099)

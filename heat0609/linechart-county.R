@@ -1,7 +1,5 @@
-extrafont::font_import()
 library(ggplot2)
 library(tidyverse)
-library(plotly)
 library(hrbrthemes)
 library(lubridate)
 source('R/loading.R')
@@ -26,17 +24,14 @@ historic.heat.ARCavg = historic.heat %>%
 #' -----------------------------------------------------------------------------
 
 #### MISC ####
-font <- "Gudea"
+font = "Gudea"
 font_add_google(family=font, font, db_cache = TRUE)
-fa_path <- systemfonts::font_info(family = "Font Awesome 6 Brands")[["path"]]
+fa_path = systemfonts::font_info(family = "Font Awesome 6 Brands")[["path"]]
 font_add(family = "fa-brands", regular = fa_path)
 theme_set(theme_minimal(base_family = font, base_size = 10))
-bg <- "#F4F5F1"
-txt_col <- "black"
+bg = "#F4F5F1"
+txt_col = "black"
 showtext_auto(enable = TRUE)
-
-caption_text  <- str_glue("**Design:** Gilbert Fontana<br>","**Data:** OECD, 2022")
-
 
 
 
@@ -54,7 +49,7 @@ p = ggplot() +
                   group_by(COUNTYNAME) %>% 
                   slice_max(year),
                 aes(x=year, y=heat_days, color=COUNTYNAME, label = round(heat_days)),
-                hjust = -.5, vjust = .5, size=8, family=font, fontface="bold") + 
+                hjust = -.6, vjust = .7, size=15, family=font, fontface="bold") + 
       geom_smooth(data = historic.heat.ARC, aes(x = year, y = heat_days), 
                   method = 'loess', span = 30, size = 0.5, se=F,
                   color = "black", alpha = 0.3, linetype = "longdash") + 
@@ -65,18 +60,19 @@ p = p +
   coord_cartesian(clip = "off") +
   theme(
     axis.title = element_blank(),
-    axis.text.y = element_blank(),
-    #axis.text = element_text(color=txt_col, size=15),
-    strip.text.x = element_text(face="bold", size=30, hjust=0.1, vjust = 0.8),
-    plot.title = element_markdown(hjust=.5,size=34, color=txt_col,lineheight=.8, face="bold", margin=margin(20,0,30,0)),
-    plot.subtitle = element_markdown(hjust=.5,size=30, color=txt_col,lineheight = 1, margin=margin(10,0,30,0)),
-    plot.caption = element_markdown(hjust=.5, margin=margin(60,0,0,0), size=20, color=txt_col, lineheight = 1.2),
-    plot.caption.position = "plot",
-    plot.background = element_rect(color=bg, fill=bg),
-    plot.margin = margin(10,10,10,10),
-    legend.position = "none",
-    legend.title = element_text(face="bold")
+    axis.text = element_text(color=txt_col, size=25),
+    strip.text.x = element_text(face="bold", size=55, hjust=0.5, vjust = 0.8),
+    panel.background = element_blank(),
+    plot.margin = margin(10,50,10,10),
+    legend.position = "none"
+  ) + 
+  scale_x_continuous(
+    limits = c(1978, 2022),
+    expand = c(0, 0),
+    breaks = seq(1980, 2020, 10),  
+    labels = c("1980", "90", "00", "10", "20")
   )
 
 
-p
+ggsave('line2.jpeg', plot = p, width = 16, height = 9)
+

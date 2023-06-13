@@ -2,15 +2,7 @@ library(tidyverse)
 library(shiny)
 library(leaflet)
 library(RColorBrewer)
-
-#' -----------------------------------------------------------------------------
-#' @color
-# display.brewer.all()
-reds = colorBin("Reds", domain = project.heat$extra_heat_days, bins = c(0,1,2,3,30,45,60,75,90,Inf))
-#' -----------------------------------------------------------------------------
-
-
-
+library(sf)
 
 #' -----------------------------------------------------------------------------
 #' @data
@@ -22,6 +14,17 @@ ga.county.shp = st_read('data/cleaned/tl_2020_ga_county.shp')
 
 
 
+
+#' -----------------------------------------------------------------------------
+#' @color
+# display.brewer.all()
+reds = colorBin("Reds", domain = project.heat$extra_heat_days, bins = c(0,1,2,3,30,45,60,75,90,Inf))
+#' -----------------------------------------------------------------------------
+
+
+
+#' -----------------------------------------------------------------------------
+#' @choropleth
 ui = bootstrapPage(tags$style(type = "text/css", "html, body, .leaflet {width:100%; height:100%}"),
                    leafletOutput("map", width = "100%", height = "100%"),
                    absolutePanel(bottom = 10, right = 0, draggable = F,
@@ -46,7 +49,6 @@ server = function(input, output, session) {
                                          scenario == tolower(strsplit(input$scenario, " ")[[1]][1])
                                   ), 
                                 by = 'COUNTYFP')
-    
   })
   
   # initiate a leaflet map 
@@ -63,7 +65,6 @@ server = function(input, output, session) {
     filteredLabel = sprintf(
         "<strong>%s</strong><br/>%d More Extra Extreme Heat Days",
         newData$COUNTYNAME.y, newData$extra_heat_days) %>% lapply(htmltools::HTML)
-    
     # draw the map
     leafletProxy("map", data = newData) %>%
       clearShapes() %>%
@@ -90,8 +91,7 @@ server = function(input, output, session) {
   })
     
 }
-
-
+#' -----------------------------------------------------------------------------
 
 
 shinyApp(ui, server)

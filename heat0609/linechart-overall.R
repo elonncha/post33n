@@ -66,7 +66,9 @@ p = ggplot() +
                   color=BROWN_DARKER, se=F) + 
       geom_smooth(data = historic.heat.ARCavg, aes(x = year, y = avg_heat_days), 
                   method = 'loess', span = 25, size = 3, 
-                  color=BLUE, se=F)
+                  color=BLUE, se=F) + 
+      # add us average line
+      geom_hline(aes(yintercept = 15), linetype = 'longdash')
 
 p = p + 
       # legend lines
@@ -119,7 +121,12 @@ p = p +
         data = data.frame(x = 2021.5, y = 47.5, t = "48"),
         aes(x, y, label = t), fontface = "bold",
         hjust = 1.5, vjust = -0.8, size = 15
-      ) 
+      ) +
+      # us average annotation text
+      geom_text(data = data.frame(x = 2010, y = 18, t = 'US County Average: 15'),
+                aes(x,y, label = t),
+                vjust = 0.4, size = 7, alpha = 0.4
+                )
 
 p = p + 
     theme(

@@ -123,9 +123,9 @@ p = p +
         hjust = 1.5, vjust = -0.8, size = 15
       ) +
       # us average annotation text
-      geom_text(data = data.frame(x = 2010, y = 18, t = 'US County Average: 15'),
+      geom_text(data = data.frame(x = 2010, y = 18, t = 'US County Average (2021): 15'),
                 aes(x,y, label = t),
-                vjust = 0.4, size = 7, alpha = 0.4
+                vjust = 0.4, size = 6, alpha = 0.4
                 )
 
 p = p + 
